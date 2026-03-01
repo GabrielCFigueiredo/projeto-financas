@@ -1,4 +1,4 @@
-class transaction:
+class Transaction:
     def __init__(self,type,value,description):
         self.type = type
         self.value = value
