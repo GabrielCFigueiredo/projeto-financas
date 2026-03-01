@@ -29,11 +29,17 @@ class financialSystem:
 
     def saveData(self):
         with open(self.data,"r") as f:
+            json.dump([t.to_dict() for t in self.transactions], f, indent=4)
+
+    def loadData(self):
+        if not os.path.exists(self.data):
+            return
+        with open(self.data,"r") as data:
             try:
-                data = json.load(f)
+                data = json.load(data)
             except json.JSONDecodeError:
                 data = []
 
             for item in data:
-                transactiom = Transaction(item["type"],item["description"],item["value"])
-                self.transactions.append(transactiom)
+                transaction = Transaction(item["type"], item["description"], item["value"])
+                self.transactions.append(transaction)
