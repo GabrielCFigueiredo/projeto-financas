@@ -1,30 +1,63 @@
-from app.services import financialSystem
+from app.services import FinancialSystem
 from app.utils import showMenu
 
 
 def main():
-    system = financialSystem()
+    system = FinancialSystem()
 
     while True:
         showMenu()
         option = input("Escolha uma opção: ")
 
         if option == "1":
-            value = float(input("Valor da receita: "))
+            while True:
+                try:
+                    value = float(input("Valor da receita: "))
+                    break
+                except ValueError:
+                    print("Digite apenas numeros.")
             description = input("Descrição: ")
-            system.addTransaction("receita", value, description)
+            system.addTransaction("receita",value, description)
 
         elif option == "2":
-            value = float(input("Valor da despesa: "))
+            while True:
+                try:
+                    value = float(input("Valor da despesa: "))
+                    break
+                except ValueError:
+                    print("Digite apenas numeros.")
             description = input("Descrição: ")
             system.addTransaction("despesa", value, description)
 
+
         elif option == "3":
+
             for t in system.listTransaction():
-                print(t)
+                print(f"""
+
+        ID: {t['id']}
+
+        Tipo: {t['type']}
+
+        Descrição: {t['description']}
+
+        Valor: {t['value']}
+
+        -----------------------
+
+        """)
 
         elif option == "4":
             print("Saldo atual:", system.calculateBalance())
+
+        elif option == "5":
+            transaction_id = input("Digite o ID da transação que deseja deletar: ")
+            deleted = system.deleteTransaction(transaction_id)
+
+            if deleted:
+                print("Transação deletada com sucesso!")
+            else:
+                print("ID não encontrado.")
 
         elif option == "0":
             print("Encerrando...")

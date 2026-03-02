@@ -4,16 +4,18 @@ import os
 from app.models import Transaction
 
 
-class financialSystem:
+class FinancialSystem:
     def __init__(self):
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.data = os.path.join(BASE_DIR, "data", "data.json")
         self.transactions = []
-        self.data = "data/data.json"
         self.loadData()
 
-    def addTransaction(self,type,description,value):
-        transaction = Transaction(type,description,value)
-        self.transactions.append(transaction)
-        self.saveData()
+    def addTransaction(self,type,value, description):
+        transaction = Transaction(type,value, description)
+        if value > 0:
+            self.transactions.append(transaction)
+            self.saveData()
 
     def listTransaction(self):
         return [t.to_dict() for t in self.transactions]
@@ -21,25 +23,37 @@ class financialSystem:
     def calculateBalance(self):
         balance = 0
         for t in self.transactions:
-            if t.type == "revenue":
+            if t.type == "receita":
                 balance += t.value
-            elif t.type == "expenses":
-                balance += t.value
-        return
+
+            elif t.type == "despesa":
+                balance -= t.value
+        return balance
 
     def saveData(self):
-        with open(self.data,"r") as f:
+        os.makedirs(os.path.dirname(self.data), exist_ok=True)
+
+        with open(self.data, "w", encoding="utf-8") as f:
             json.dump([t.to_dict() for t in self.transactions], f, indent=4)
 
     def loadData(self):
         if not os.path.exists(self.data):
             return
-        with open(self.data,"r") as data:
+        with open(self.data,"r") as f:
             try:
-                data = json.load(data)
+                data = json.load(f)
             except json.JSONDecodeError:
                 data = []
 
             for item in data:
-                transaction = Transaction(item["type"], item["description"], item["value"])
+                transaction = Transaction(item["type"], item["description"], item["value"],item.get("id"))
                 self.transactions.append(transaction)
+
+
+    def deleteTransaction(self,transaction_id):
+        for t in self.transactions:
+            if t.id == transaction_id:
+                self.transactions.remove(t)
+                self.saveData()
+                return True
+        return False
