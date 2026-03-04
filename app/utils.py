@@ -5,4 +5,6 @@ def showMenu():
     print("3 - Listar Transações")
     print("4 - Ver Saldo")
     print("5 - Deletar transação por ID")
+    print("6 - Listar apenas receitas")
+    print("7 - Gerar relatório geral")
     print("0 - Sair")
