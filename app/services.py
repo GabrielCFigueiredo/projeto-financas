@@ -63,16 +63,20 @@ class FinancialSystem:
     def generateReport(self):
         total_revenue = 0
         total_expense = 0
-        for t in self.transactions:
-            if t.type == "receita":
-                total_revenue += t.value
-            elif t.type == "despesa":
-                total_expense += t.value
 
-        balance = total_expense - total_revenue
-        return{
-            "Total de Receitas": total_revenue,
-            "Total de Expenses": total_expense,
-            "Saldo Final": balance,
-            "Quantidade de Transações": len(self.transactions)
+        for t in self.transactions:
+            value = float(t.value)
+
+            if t.type == "receita":
+                total_revenue += value
+            elif t.type == "despesa":
+                total_expense += value
+
+        balance = total_revenue - total_expense
+
+        return {
+            "total_receitas": total_revenue,
+            "total_despesas": total_expense,
+            "saldo_final": balance,
+            "quantidade_transacoes": len(self.transactions)
         }
