@@ -2,6 +2,7 @@ import _json
 import json
 import os
 from app.models import Transaction
+import matplotlib.pyplot as plt
 
 
 class FinancialSystem:
@@ -80,3 +81,32 @@ class FinancialSystem:
             "saldo_final": balance,
             "quantidade_transacoes": len(self.transactions)
         }
+
+    def generateChart(self):
+
+        total_revenue = 0
+        total_expense = 0
+
+        for t in self.transactions:
+
+            try:
+                value = float(t.value)
+            except ValueError:
+                continue
+
+            if t.type == "receita":
+                total_revenue += value
+            elif t.type == "despesa":
+                total_expense += value
+
+        labels = ["Receitas", "Despesas"]
+        values = [total_revenue, total_expense]
+
+        plt.bar(labels, values)
+
+        plt.title("Relatório Financeiro")
+        plt.ylabel("Valor (R$)")
+        plt.xlabel("Tipo")
+
+        plt.show()
+        plt.savefig("relatorio.png")

@@ -85,6 +85,9 @@ def main():
             print(f"Quantidade de Transações: {report['quantidade_transacoes']}")
             print("======================================")
 
+        elif option == "8":
+            system.generateChart()
+
         elif option == "0":
             print("Encerrando...")
             break
