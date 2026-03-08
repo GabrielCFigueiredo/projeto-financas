@@ -1,9 +1,12 @@
+from app.database.database import SessionLocal
 from app.services import FinancialSystem
 from app.utils import showMenu
 
 
 def main():
-    system = FinancialSystem()
+
+    db = SessionLocal()
+    system = FinancialSystem(db)
 
     while True:
         showMenu()

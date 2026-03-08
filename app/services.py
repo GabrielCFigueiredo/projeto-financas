@@ -1,22 +1,37 @@
 import _json
 import json
 import os
+
+from app.database.database import SessionLocal
 from app.models import Transaction
 import matplotlib.pyplot as plt
 
 
 class FinancialSystem:
-    def __init__(self):
+    def __init__(self, db):
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.data = os.path.join(BASE_DIR, "data", "data.json")
         self.transactions = []
-        self.loadData()
+        self.db = db
 
     def addTransaction(self,type,value, description):
-        transaction = Transaction(type,value, description)
-        if value > 0:
-            self.transactions.append(transaction)
-            self.saveData()
+
+        db = SessionLocal()
+        transaction = Transaction(
+            type=type,
+            value=value,
+            description=description
+        )
+
+        self.db.add(transaction)
+        self.db.commit()
+        self.db.refresh(transaction)
+
+        return transaction
+
+    def listTransactions(self):
+
+        return self.db.query(Transaction).all()
 
     def listTransaction(self):
         return [t.to_dict() for t in self.transactions]
@@ -37,18 +52,6 @@ class FinancialSystem:
         with open(self.data, "w", encoding="utf-8") as f:
             json.dump([t.to_dict() for t in self.transactions], f, indent=4)
 
-    def loadData(self):
-        if not os.path.exists(self.data):
-            return
-        with open(self.data,"r") as f:
-            try:
-                data = json.load(f)
-            except json.JSONDecodeError:
-                data = []
-
-            for item in data:
-                transaction = Transaction(item["type"], item["description"], item["value"],item.get("id"))
-                self.transactions.append(transaction)
 
     def filterRevenue(self):
         return [t.to_dict() for t in self.transactions if t.type == "receita"]

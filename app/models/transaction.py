@@ -1,7 +1,9 @@
 from sqlalchemy import Column,String,Float
 from app.database.database import Base
 import  uuid
-
+from sqlalchemy import Column, String, Float
+import uuid
+from app.database.database import Base
 class Transaction(Base):
     __tablename__ = "transactions"
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
