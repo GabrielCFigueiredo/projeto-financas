@@ -1,3 +1,5 @@
+import transactions
+
 from app.database.database import SessionLocal
 from app.services import FinancialSystem
 from app.utils import showMenu
@@ -35,20 +37,13 @@ def main():
 
         elif option == "3":
 
-            for t in system.listTransaction():
-                print(f"""
-
-        ID: {t['id']}
-
-        Tipo: {t['type']}
-
-        Descrição: {t['description']}
-
-        Valor: {t['value']}
-
-        -----------------------
-
-        """)
+            transactions = system.listTransactions()
+            for t in transactions:
+                print("----------------------")
+                print(f"ID: {t.id}")
+                print(f"Tipo: {t.type}")
+                print(f"Valor: {t.value}")
+                print(f"Descrição: {t.description}")
 
         elif option == "4":
             print("Saldo atual:", system.calculateBalance())

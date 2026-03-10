@@ -1,9 +1,7 @@
-from platform import system
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-
-from app.auth.auth import create_acess_token, SECRET_KEY, ALGORITHM, verify_token
+from app.auth.auth import create_access_token, verify_token
 from app.database.database import SessionLocal
 from app.database.database import engine, Base
 from app.models.transaction import Transaction
@@ -31,7 +29,7 @@ def list_transactions(db: Session = Depends(get_db), user=Depends(verify_token))
 
     system = FinancialSystem(db)
 
-    return system.listTransaction()
+    return system.listTransactions()
 
 @app.post("/financeira")
 def create_transaction(type: str, description: str, value: float, db: Session = Depends(get_db)):
@@ -61,12 +59,13 @@ def delete_transaction(transaction_id: str, db: Session = Depends(get_db)):
 
 @app.get("/relatorio")
 def get_report(db: Session = Depends(get_db)):
-    return db.generateReport()
+    system = FinancialSystem(db)
+    return system.generateReport()
 
 @app.post("/login")
 def login(username: str, password: str):
-    if username != "admin" and password != "123":
+    if username != "admin" or password != "123":
         return {"error": "Credenciais incorretas"}
-    token = create_acess_token({"sub": username})
+    token = create_access_token({"sub": username})
     return {"token": token}
 
